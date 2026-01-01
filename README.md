@@ -11,20 +11,6 @@
 
 ---
 
-## Table of Contents
-- Overview
-- Data
-- Research alignment
-- Features
-- Models
-- Evaluation
-- Quickstart
-- Inference
-- Streamlit app
-- Limitations
-
----
-
 ## Overview
 Fraudulent motor claims (Own Damage and Third-Party Bodily Injury) are rare and costly. This project trains multiple classifiers, handles imbalance with SMOTE and class weights, calibrates probabilities, and surfaces explainability (SHAP) plus simple rule flags to support investigators.
 
