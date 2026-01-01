@@ -194,15 +194,20 @@ def preprocess_data(data_path=None, save_preprocessor=True):
             X_temp, y_temp, test_size=0.2, random_state=RANDOM_STATE, stratify=y_temp
         )
 
-    # Remove raw date columns post-split
-    for df_split in [X_train, X_val, X_test]:
-        for col in ["incident_date", "policy_bind_date", "claim_date"]:
-            if col in df_split.columns:
-                df_split.drop(columns=[col], inplace=True)
+    # Remove raw date columns post-split; copy to avoid chained assignment warnings
+    drop_date_cols = ["incident_date", "policy_bind_date", "claim_date"]
+    X_train = X_train.drop(columns=drop_date_cols, errors="ignore").copy()
+    X_val = X_val.drop(columns=drop_date_cols, errors="ignore").copy()
+    X_test = X_test.drop(columns=drop_date_cols, errors="ignore").copy()
 
     # Identify columns
-    categorical_cols = X_train.select_dtypes(include=["object", "bool"]).columns.tolist()
+    categorical_cols = X_train.select_dtypes(include=["object", "bool", "category"]).columns.tolist()
     numerical_cols = X_train.select_dtypes(include=[np.number]).columns.tolist()
+
+    # Impute numeric missing values using train medians (fallback to 0 if all NaN)
+    numeric_impute_values = X_train[numerical_cols].median().fillna(0)
+    for df_split in [X_train, X_val, X_test]:
+        df_split[numerical_cols] = df_split[numerical_cols].fillna(numeric_impute_values)
 
     # Encode categoricals (fit on train)
     X_train_enc, [X_val_enc, X_test_enc], label_encoders = _encode_categoricals(
@@ -231,6 +236,7 @@ def preprocess_data(data_path=None, save_preprocessor=True):
         "categorical_cols": categorical_cols,
         "numerical_cols": numerical_cols,
         "feature_columns": X_train_enc.columns.tolist(),
+        "numeric_impute_values": numeric_impute_values,
         "class_weight": class_weight_dict,
     }
 
@@ -273,6 +279,13 @@ def transform_new_data(df: pd.DataFrame, preprocessors: Dict[str, Any]) -> pd.Da
             df_proc[col] = np.nan
 
     df_proc = df_proc[feature_columns].copy()
+
+    # Impute numerics to mirror training pipeline
+    numeric_impute_values = preprocessors.get("numeric_impute_values")
+    if numeric_impute_values is not None:
+        df_proc[numerical_cols] = df_proc[numerical_cols].fillna(numeric_impute_values)
+    else:
+        df_proc[numerical_cols] = df_proc[numerical_cols].fillna(0)
 
     # Encode categoricals using saved encoders
     for col in categorical_cols:

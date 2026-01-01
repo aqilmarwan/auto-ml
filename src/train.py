@@ -149,7 +149,8 @@ def train_models():
 
     # Calibrate best model probabilities on validation set (sigmoid)
     best_model = model_specs[best_model_name]
-    calibrator = CalibratedClassifierCV(base_estimator=clone(best_model), method="sigmoid", cv=5)
+    # sklearn >=1.4 uses 'estimator' instead of deprecated 'base_estimator'
+    calibrator = CalibratedClassifierCV(estimator=clone(best_model), method="sigmoid", cv=5)
     calibrator.fit(pd.concat([X_train, X_val]), np.concatenate([y_train, y_val]))
     models[f"{best_model_name}_calibrated"] = calibrator
 

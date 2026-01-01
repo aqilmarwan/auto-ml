@@ -1,12 +1,13 @@
 <div align="center">
   <h1>Motor Insurance Fraud Detection</h1>
-  <p>End-to-end ML system to score motor insurance claims for fraud risk, combining research-backed features, imbalance handling (SMOTE + class weights), calibrated tree models, and explainability.</p>
+  <p>End-to-end ML system to score motor insurance claims for fraud risk.</p>
   <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.x-blue?style=flat-square&logo=python&logoColor=white" alt="Python" /></a>
   <a href="https://scikit-learn.org/"><img src="https://img.shields.io/badge/scikit--learn-ML-orange?style=flat-square&logo=scikit-learn&logoColor=white" alt="sklearn" /></a>
   <a href="https://www.kaggle.com/datasets/buntyshah/auto-insurance-claims-data"><img src="https://img.shields.io/badge/Dataset-Kaggle-lightgrey?style=flat-square&logo=kaggle" alt="dataset" /></a>
 </div>
 
-> Note: Built for a fraud analytics assessment using the Kaggle Auto Insurance Claims dataset and aligned with the IJCA paper (Njeru et al., 2025). Data is synthetic/simplified—do not deploy without validating on real data.
+> [!NOTE]
+> Built for a fraud analytics assessment using the Kaggle's dataset and aligned with the IJCA paper [Njeru et al., 2025](https://www.ijcaonline.org/archives/volume187/number65/njeru-2025-ijca-926105.pdf). Data is synthetic/simplified—do not deploy without validating on real data.
 
 ---
 
@@ -37,23 +38,20 @@ Fraudulent motor claims (Own Damage and Third-Party Bodily Injury) are rare and 
 - Mirrors IJCA paper (Njeru et al., 2025) with supervised learning under imbalance, SMOTE, and tree-based models.
 - Adds calibrated probabilities, richer feature engineering, top-k business metrics, and SHAP explainability.
 
+## Feature engineering diagrams
+- Geo enrichment: `incident_city` / `incident_location` mapped to latitude features and combined as a geo signal.
+![Geo enrichment](public/d1.png)
+- Claim efficiency: `total_claim_amount` vs `policy_annual_premium` to form `claim_to_premium_ratio`.
+![Claim-to-premium ratio](public/d2.png)
+- Reporting timeliness: `incident_date` vs `incident_reported` to derive `report_delay_days`.
+![Report delay](public/d3.png)
+
 ## Features (engineered in `src/preprocess.py`)
 - Temporal/behavioral: `report_delay_days`, `policy_tenure_years`, `claims_per_year`
 - Financial ratios: `claim_to_premium_ratio`, injury/property/vehicle claim shares, `repair_to_value_ratio`
 - Missingness flags: `police_report_missing_flag`, `property_damage_missing_flag`
 - Geo/time: `incident_state`, `time_of_day_bucket`, `is_weekend`
 - Cleaning: safe coercion of dates/numerics, high-cardinality ID drops (`policy_number`, `insured_zip`, `incident_location`)
-
-## Models (trained in `src/train.py`)
-- Logistic Regression (class-weighted baseline)
-- Random Forest, Decision Tree, SVM, AdaBoost, Naive Bayes
-- XGBoost (scale_pos_weight) and optional LightGBM (class_weight)
-- Best model is chosen by validation ROC AUC, then probability-calibrated (sigmoid) and saved as `<model>_calibrated`
-
-## Evaluation (in `src/evaluate.py`)
-- Metrics: ROC AUC, PR AUC, accuracy, precision, recall, F1, Brier
-- Business focus: precision@k, recall@k, lift@k (k = top 10% by risk)
-- Artifacts: confusion matrices, ROC AUC comparison bar plot, SHAP bar summaries for tree models, `models/evaluation_results.csv`
 
 ## Quickstart
 ```bash
