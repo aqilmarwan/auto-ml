@@ -30,21 +30,13 @@ Fraudulent motor claims (Own Damage and Third-Party Bodily Injury) are rare and 
 
 ## Data
 - Source: Kaggle Auto Insurance Claims ([link](https://www.kaggle.com/datasets/buntyshah/auto-insurance-claims-data))
-- Target: `fraud_reported` (binary, yes/no)
+- Target: `fraud_reported` (yes/no)
 - Scope: policyholder, policy, incident, vehicle, injury/property/vehicle claim amounts, police report availability
 - Synthetic dataset; missing values treated as signal, not noise
 
 ## Research alignment
 - Mirrors IJCA paper (Njeru et al., 2025) with supervised learning under imbalance, SMOTE, and tree-based models.
 - Adds calibrated probabilities, richer feature engineering, top-k business metrics, and SHAP explainability.
-
-## Feature engineering diagrams
-- Geo enrichment: `incident_city` / `incident_location` mapped to latitude features and combined as a geo signal.
-![Geo enrichment](public/d1.png)
-- Claim efficiency: `total_claim_amount` vs `policy_annual_premium` to form `claim_to_premium_ratio`.
-![Claim-to-premium ratio](public/d2.png)
-- Reporting timeliness: `incident_date` vs `incident_reported` to derive `report_delay_days`.
-![Report delay](public/d3.png)
 
 ## Features (engineered in `src/preprocess.py`)
 - Temporal/behavioral: `report_delay_days`, `policy_tenure_years`, `claims_per_year`
@@ -53,11 +45,19 @@ Fraudulent motor claims (Own Damage and Third-Party Bodily Injury) are rare and 
 - Geo/time: `incident_state`, `time_of_day_bucket`, `is_weekend`
 - Cleaning: safe coercion of dates/numerics, high-cardinality ID drops (`policy_number`, `insured_zip`, `incident_location`)
 
+### Feature Engineering Suggestions
+- Geo enrichment: map `incident_city` and `incident_location` to latitude proxies (`city_lat`, `location_lat`) and combine them into a single geo signal to capture regional risk patterns.
+![Geo enrichment](public/d1.png)
+- Claim efficiency: compare `total_claim_amount` to `policy_annual_premium` via `claim_to_premium_ratio` to flag claims that are unusually large relative to the premium paid.
+![Claim-to-premium ratio](public/d2.png)
+- Reporting timeliness: compute `report_delay_days` from `incident_date` and `incident_reported` to capture lag risk—long delays can correlate with higher fraud likelihood.
+![Report delay](public/d3.png)
+
 ## Quickstart
 ```bash
 pip install -r requirements.txt
-python src/train.py          # preprocess, SMOTE on train only, train + calibrate, save models
-python src/evaluate.py       # evaluate all saved models, save metrics/plots
+python src/train.py         
+python src/evaluate.py      
 ```
 
 ## Inference (batch scoring)
@@ -66,12 +66,6 @@ python src/inference.py --input data/insurance_claims.csv --model XGBoost_calibr
 ```
 - Outputs `models/inference_output.csv` with `fraud_risk_score`, `fraud_prediction`, and rule flags (`late_report`, `high_claim_to_premium`, `missing_police_report`, etc.).
 - Reuses saved preprocessors (`models/preprocessors.pkl`) to ensure train/inference parity.
-
-## Streamlit app
-```bash
-streamlit run src/app.py
-```
-- Upload CSV, select model (AdaBoost/XGBoost variants), view fraud vs genuine counts, table of predictions, and download results.
 
 ## Limitations
 - Synthetic dataset; real-world telematics, networks, and notes are absent.
