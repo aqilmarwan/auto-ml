@@ -7,7 +7,7 @@
 </div>
 
 > [!NOTE]
-> Built for a fraud analytics assessment using the Kaggle's dataset and aligned with the IJCA paper [Njeru et al., 2025](https://www.ijcaonline.org/archives/volume187/number65/njeru-2025-ijca-926105.pdf). Data is synthetic/simplified—do not deploy without validating on real data.
+> Built for a fraud analytics assessment using the Kaggle's dataset and aligned with the IJCA paper [Njeru et al., 2025](https://www.ijcaonline.org/archives/volume187/number65/njeru-2025-ijca-926105.pdf).
 
 ---
 
@@ -21,8 +21,8 @@ Fraudulent motor claims (Own Damage and Third-Party Bodily Injury) are rare and 
 - Synthetic dataset; missing values treated as signal, not noise
 
 ## Research alignment
-- Mirrors IJCA paper (Njeru et al., 2025) with supervised learning under imbalance, SMOTE, and tree-based models.
-- Adds calibrated probabilities, richer feature engineering, top-k business metrics, and SHAP explainability.
+- Reimplemented from IJCA paper (Njeru et al., 2025) with supervised learning under imbalance, SMOTE, and tree-based models.
+- Added calibrated probabilities, richer feature engineering, top-k business metrics, and SHAP explainability can be found in `/models`.
 
 ## Features (engineered in `src/preprocess.py`)
 - Temporal/behavioral: `report_delay_days`, `policy_tenure_years`, `claims_per_year`
@@ -38,6 +38,14 @@ Fraudulent motor claims (Own Damage and Third-Party Bodily Injury) are rare and 
 ![Claim-to-premium ratio](public/d2.png)
 - Reporting timeliness: compute `report_delay_days` from `incident_date` and `incident_reported` to capture lag risk—long delays can correlate with higher fraud likelihood.
 ![Report delay](public/d3.png)
+
+## Assessment Questions
+1.
+2.
+3.
+4.
+5.
+6.
 
 ## Quickstart
 ```bash
