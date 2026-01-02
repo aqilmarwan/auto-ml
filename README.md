@@ -41,6 +41,7 @@ Fraudsters often plan a staged accident far away from home when the distance sho
 - Claim efficiency: compare `total_claim_amount` to `policy_annual_premium` via `claim_to_premium_ratio` to flag claims that are unusually large relative to the premium paid.
 ![Claim-to-premium ratio](public/d2.png)
 Claim efficiency compares how much you claim versus how much you pay in premiums. We divide the claim amount by the annual premium to get a ratio.
+
 | Ratio | Simple Explanation | Risk Level |
 |-------|-------------------|------------|
 | 0.5 | "You claimed half of what you paid - very normal" | Very Low |
@@ -53,6 +54,7 @@ Claim efficiency compares how much you claim versus how much you pay in premiums
 ![Report delay](public/d3.png)
 > [!TIP]
 > `report_delay_days` can often be considered one of the strongest predictors of claim fraud. The customers had the time to make witness forget about the details, fabricate evidence, make up stories as supposed to genuine urgency as a sign for needing help.
+
 | Report Delay | Fraud Risk | Risk Multiplier | Typical Scenario |
 |--------------|------------|-----------------|------------------|
 | 0-1 days | **Low** | 1x (baseline) | Genuine accidents, immediate reporting |
