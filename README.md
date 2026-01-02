@@ -32,7 +32,7 @@ Fraudulent motor claims (Own Damage and Third-Party Bodily Injury) are rare and 
 - Cleaning: safe coercion of dates/numerics, high-cardinality ID drops (`policy_number`, `insured_zip`, `incident_location`)
 
 ### Feature Engineering Suggestions
-1. Geo enrichment: map `customer_location` and `incident_location` to latitude proxies (`city_lat`, `location_lat`) and combine them into a single geo signal to capture regional risk patterns.
+1. Geo enrichment: map `incident_city` and `incident_location` to latitude proxies (`city_lat`, `location_lat`) and combine them into a single geo signal to capture regional risk patterns.
 ![Geo enrichment](public/d1.png)
 > [!TIP]
 > `city_lat`: Sepang [2.7940744366069867, 101.67145691752741], `location_lat`: Kulim [5.347953273841229, 100.56212257521749]
