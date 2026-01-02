@@ -21,8 +21,8 @@ Fraudulent motor claims (Own Damage and Third-Party Bodily Injury) are rare and 
 - Synthetic dataset; missing values treated as signal, not noise
 
 ## Research alignment
-- Reimplemented from IJCA paper (Njeru et al., 2025) with supervised learning under imbalance, SMOTE, and tree-based models.
-- Added calibrated probabilities, richer feature engineering, top-k business metrics, and SHAP explainability can be found in `/models`.
+- Reimplemented with supervised learning under imbalance, SMOTE, and tree-based models.
+- Added calibrated probabilities, richer feature engineering, top-k metrics, and SHAP explainability can be found in `/models`.
 
 ## Features (engineered in `src/preprocess.py`)
 - Temporal/behavioral: `report_delay_days`, `policy_tenure_years`, `claims_per_year`
@@ -74,10 +74,8 @@ python src/evaluate.py
 ```bash
 python src/inference.py --input data/insurance_claims.csv --model XGBoost_calibrated
 ```
-- Outputs `models/inference_output.csv` with `fraud_risk_score`, `fraud_prediction`, and rule flags (`late_report`, `high_claim_to_premium`, `missing_police_report`, etc.).
-- Reuses saved preprocessors (`models/preprocessors.pkl`) to ensure train/inference parity.
+- To help with flagging (`late_report`, `high_claim_to_premium`, `missing_police_report`) the pre-processed data from (`models/preprocessors.pkl`) inference can be done to add column on such cases.
 
 ## Limitations
-- Synthetic dataset; real-world telematics, networks, and notes are absent.
-- Rule flags are simple heuristics; thresholds may need tuning for production.
-- No automated data/label drift monitoring; add before deployment.
+- Datasets are based on America region and unsure of the legitimacy.
+- Rule flags are simple heuristics thresholds may need tuning for iterative testing and production.
