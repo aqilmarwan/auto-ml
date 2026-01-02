@@ -29,7 +29,6 @@ Fraudulent motor claims (Own Damage and Third-Party Bodily Injury) are rare and 
 - Financial ratios: `claim_to_premium_ratio`, injury/property/vehicle claim shares, `repair_to_value_ratio`
 - Missingness flags: `police_report_missing_flag`, `property_damage_missing_flag`
 - Geo/time: `incident_state`, `time_of_day_bucket`, `is_weekend`
-- Cleaning: safe coercion of dates/numerics, high-cardinality ID drops (`policy_number`, `insured_zip`, `incident_location`)
 
 ### Feature Engineering Suggestions
 1. Geo enrichment: map `incident_city` and `incident_location` to latitude proxies (`city_lat`, `location_lat`) and combine them into a single geo signal to capture regional risk patterns.
