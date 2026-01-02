@@ -32,13 +32,13 @@ Fraudulent motor claims (Own Damage and Third-Party Bodily Injury) are rare and 
 - Cleaning: safe coercion of dates/numerics, high-cardinality ID drops (`policy_number`, `insured_zip`, `incident_location`)
 
 ### Feature Engineering Suggestions
-- Geo enrichment: map `customer_location` and `incident_location` to latitude proxies (`city_lat`, `location_lat`) and combine them into a single geo signal to capture regional risk patterns.
+1. Geo enrichment: map `customer_location` and `incident_location` to latitude proxies (`city_lat`, `location_lat`) and combine them into a single geo signal to capture regional risk patterns.
 ![Geo enrichment](public/d1.png)
 > [!TIP]
 > `city_lat`: Sepang [2.7940744366069867, 101.67145691752741], `location_lat`: Kulim [5.347953273841229, 100.56212257521749]
 Fraudsters often plan a staged accident far away from home when the distance shows unusual travel distance proportionally. Question arise to why did the customer travel 385km for an accident?
 
-- Claim efficiency: compare `total_claim_amount` to `policy_annual_premium` via `claim_to_premium_ratio` to flag claims that are unusually large relative to the premium paid.
+2. Claim efficiency: compare `total_claim_amount` to `policy_annual_premium` via `claim_to_premium_ratio` to flag claims that are unusually large relative to the premium paid.
 ![Claim-to-premium ratio](public/d2.png)
 Claim efficiency compares how much you claim versus how much you pay in premiums. We divide the claim amount by the annual premium to get a ratio.
 
@@ -50,7 +50,7 @@ Claim efficiency compares how much you claim versus how much you pay in premiums
 | 5.0 | "You claimed five times what you paid - very suspicious" | High |
 | 10.0 | "You claimed ten times what you paid - likely fraud" | Critical |
 
-- Reporting timeliness: compute `report_delay_days` from `incident_date` and `incident_reported` to capture lag risk—long delays can correlate with higher fraud likelihood.
+3. Reporting timeliness: compute `report_delay_days` from `incident_date` and `incident_reported` to capture lag risk—long delays can correlate with higher fraud likelihood.
 ![Report delay](public/d3.png)
 > [!TIP]
 > `report_delay_days` can often be considered one of the strongest predictors of claim fraud. The customers had the time to make witness forget about the details, fabricate evidence, make up stories as supposed to genuine urgency as a sign for needing help.
